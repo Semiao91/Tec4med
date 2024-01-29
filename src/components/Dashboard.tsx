@@ -18,6 +18,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MainComponent from "./DataParsers";
 
+
 interface Project {
     id: number;
     title: string;
@@ -25,6 +26,18 @@ interface Project {
     userCount: number;
     beginDate?: string;
     expirationDate?: string;
+}
+
+interface Device {
+    deviceId: number;
+    projectId: number;
+    // ... other device properties
+}
+
+interface User {
+    userId: number;
+    projectId: number;
+    // ... other user properties
 }
 
 
@@ -106,21 +119,40 @@ export default function Dashboard() {
 
     const [projects, setProjects] = useState<Project[]>([]);
 
+    const handleDelete = (projectId: number) => {
+        const updatedProjects = projects.filter(project => project.id !== projectId);
+        setProjects(updatedProjects);
+    };
+
     useEffect(() => {
-        fetch('../../public/data/project.json')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                setProjects(data);
-            })
-            .catch(error => {
-                console.error('Error fetching project data:', error);
-            });
+        const fetchProjects = async () => {
+            try {
+                const projectResponse = await fetch('/data/project.json');
+                const projectData = await projectResponse.json();
+
+                const deviceResponse = await fetch('/data/device.json');
+                const deviceData = await deviceResponse.json();
+
+                const userResponse = await fetch('/data/user.json');
+                const userData = await userResponse.json();
+
+                const processedProjects = projectData.map((project: Project) => {
+                    const deviceCount = deviceData.filter((device: Device) => device.projectId === project.id).length;
+                    const userCount = userData.filter((user: User) => user.projectId === project.id).length;
+
+                    return { ...project, deviceCount, userCount };
+                });
+
+                setProjects(processedProjects);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchProjects();
     }, []);
+
+
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -200,7 +232,7 @@ export default function Dashboard() {
                         <Grid container spacing={4}>
                             {projects.map((project, index) => (
                                 <Grid item xs={12} md={4} lg={4} key={index}>
-                                    <MainComponent project={project} />
+                                    <MainComponent project={project} onDelete={handleDelete} />
                                 </Grid>
                             ))}
                         </Grid>
