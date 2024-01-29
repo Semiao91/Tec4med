@@ -231,7 +231,7 @@ export default function Dashboard() {
                     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
                         <Grid container spacing={4}>
                             {projects.map((project, index) => (
-                                <Grid item xs={12} md={4} lg={4} key={index}>
+                                <Grid item xs={12} md={6} lg={4} key={index}>
                                     <MainComponent project={project} onDelete={handleDelete} />
                                 </Grid>
                             ))}

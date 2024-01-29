@@ -10,13 +10,15 @@ interface Project {
     expirationDate: string;
 }
 type onDeleteType = (projectId: number) => void;
+type onModalType = (projectId: number) => void;
 
 interface MainComponentProps {
     project: Project;
     onDelete: onDeleteType;
+    onModal: onModalType;
 }
 
-function MainComponent({ project, onDelete }: MainComponentProps) {
+function MainComponent({ project, onDelete, onModal }: MainComponentProps) {
     return (
         <BasicCard
             projectId={project.id}
@@ -26,6 +28,7 @@ function MainComponent({ project, onDelete }: MainComponentProps) {
             startDate={project.beginDate || ''}
             endDate={project.expirationDate || 'N/'}
             onDelete={onDelete}
+            onModal={onModal}
         />
     );
 }
