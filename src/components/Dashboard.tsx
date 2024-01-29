@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from 'react';
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -16,7 +16,17 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import BasicCard from "./Card";
+import MainComponent from "./DataParsers";
+
+interface Project {
+    id: number;
+    title: string;
+    deviceCount: number;
+    userCount: number;
+    beginDate?: string;
+    expirationDate?: string;
+}
+
 
 function Copyright(props: any) {
     return (
@@ -35,6 +45,7 @@ function Copyright(props: any) {
         </Typography>
     );
 }
+
 
 const drawerWidth: number = 240; //Controls width of side bar
 
@@ -90,10 +101,31 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
+
+
+
+    const [projects, setProjects] = useState<Project[]>([]);
+
+    useEffect(() => {
+        fetch('../../public/data/project.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                setProjects(data);
+            })
+            .catch(error => {
+                console.error('Error fetching project data:', error);
+            });
+    }, []);
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
         setOpen(!open);
     };
+
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -166,9 +198,9 @@ export default function Dashboard() {
                     <Toolbar />
                     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
                         <Grid container spacing={4}>
-                            {Array.from(new Array(5)).map((_, index) => (
+                            {projects.map((project, index) => (
                                 <Grid item xs={12} md={4} lg={4} key={index}>
-                                    <BasicCard />
+                                    <MainComponent project={project} />
                                 </Grid>
                             ))}
                         </Grid>
