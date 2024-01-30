@@ -21,6 +21,7 @@ interface BasicCardProps {
     startDate: string;
     endDate: string;
     deviceSerialNumbers?: string[];
+    userNames?: string[];
     onDelete: (projectId: number) => void;
     onModal: (projectID: number) => void;
     onUpdate: (updatedProject: UpdatedProject) => void;
@@ -52,6 +53,7 @@ export default function BasicCard({
     startDate,
     endDate,
     deviceSerialNumbers,
+    userNames,
     onDelete,
     onUpdate,
 }: BasicCardProps) {
@@ -70,9 +72,9 @@ export default function BasicCard({
         const updatedProject: Project = {
             id: projectId,
             title: ModalProjectName,
-            description: ModalprojectDescription, // Assuming this is a new field
-            deviceCount: deviceCount, // These should be passed to the BasicCard
-            userCount: userCount,   // These should be passed to the BasicCard
+            description: ModalprojectDescription,
+            deviceCount: deviceCount,
+            userCount: userCount,
             beginDate: ModalStartDate,
             expirationDate: ModalEndDate,
         };
@@ -118,9 +120,18 @@ export default function BasicCard({
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
                     Users: {userCount}
-                    <IconButton aria-label="users" size="small">
-                        <PersonIcon fontSize="inherit" />
-                    </IconButton>
+                    <Tooltip
+                        title={
+                            userNames && userNames.length > 0
+                                ? <span dangerouslySetInnerHTML={{ __html: userNames.join('<br />') }} />
+                                : "No users active"
+                        }
+                        placement='right'
+                    >
+                        <IconButton aria-label="devices" size="small">
+                            <PersonIcon fontSize="inherit" />
+                        </IconButton>
+                    </Tooltip>
                 </Typography>
                 <Typography variant="body2">
                     Description: {ModalprojectDescription}

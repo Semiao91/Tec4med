@@ -18,6 +18,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MainComponent from "./DataParsers";
 import { mainListItems, secondaryListItems } from './SidebarButtons';
+import Table from './Table';
 
 interface Project {
     id: number;
@@ -27,6 +28,7 @@ interface Project {
     beginDate?: string;
     expirationDate?: string;
     deviceSerialNumbers?: string[];
+    userNames?: string[];
 }
 
 interface Device {
@@ -126,6 +128,8 @@ export default function Dashboard() {
 
 
     const [projects, setProjects] = useState<Project[]>([]);
+    const [tableData, setTableData] = useState([]);
+    const [currentView, setCurrentView] = useState('dashboard');
 
     function updateProjectData(updatedProject: UpdatedProject) {
         setProjects(prevProjects => prevProjects.map(project =>
@@ -153,12 +157,28 @@ export default function Dashboard() {
                 const processedProjects = projectData.map((project: Project) => {
                     const devices = deviceData.filter((device: Device) => device.projectId === project.id);
                     const deviceCount = devices.length;
-                    const userCount = userData.filter((user: User) => user.projectId === project.id).length;
+                    const users = userData.filter((user: User) => user.projectId === project.id);
+                    const userCount = users.length;
                     const deviceSerialNumbers = devices.map(device => device.serialNumber);
+                    const userNames = users.map(user => user.firstName + " " + user.lastName);
 
-                    return { ...project, deviceCount, userCount, deviceSerialNumbers };
+                    return { ...project, deviceCount, userCount, deviceSerialNumbers, userNames };
                 });
 
+                const tableData = [];
+
+                processedProjects.forEach(project => {
+                    project.userNames.forEach((userName, index) => {
+                        const device = project.deviceSerialNumbers[index] || 'No Device';
+                        tableData.push({
+                            userName: userName,
+                            projectName: project.title,
+                            device: device
+                        });
+                    });
+                });
+
+                setTableData(tableData);
                 setProjects(processedProjects);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -167,6 +187,7 @@ export default function Dashboard() {
 
         fetchProjects();
     }, []);
+
 
 
     const [open, setOpen] = React.useState(true);
@@ -228,9 +249,8 @@ export default function Dashboard() {
                     </Toolbar>
                     <Divider />
                     <List component="nav">
-                        {mainListItems}
+                        {mainListItems(setCurrentView)}
                         <Divider sx={{ my: 1 }} />
-                        {secondaryListItems}
                     </List>
                 </Drawer>
                 <Box
@@ -247,20 +267,29 @@ export default function Dashboard() {
                 >
                     <Toolbar />
                     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-                        <Grid container spacing={4}>
-                            {projects.map((project, index) => (
-                                <Grid item xs={12} md={6} lg={4} key={index}>
-                                    <MainComponent
-                                        project={project}
-                                        onDelete={handleDelete}
-                                        onUpdate={updateProjectData} />
-                                </Grid>
-                            ))}
-                        </Grid>
+                        {currentView === 'users' && (
+                            <Box>
+                                <Table data={tableData} />
+                            </Box>
+                        )}
+                        {currentView === 'dashboard' && (
+                            <Grid container spacing={4}>
+                                {projects.map((project, index) => (
+                                    <Grid item xs={12} md={6} lg={4} key={index}>
+                                        <MainComponent
+                                            project={project}
+                                            onDelete={handleDelete}
+                                            onUpdate={updateProjectData}
+                                        />
+                                    </Grid>
+                                ))}
+                            </Grid>
+                        )}
                         <Copyright sx={{ pt: 4 }} />
                     </Container>
                 </Box>
             </Box>
         </ThemeProvider>
+
     );
 }

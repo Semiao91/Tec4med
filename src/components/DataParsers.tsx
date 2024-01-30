@@ -9,6 +9,7 @@ export interface Project {
     expirationDate: string;
     description?: string;
     deviceSerialNumbers?: string[];
+    userNames?: string[];
 }
 
 export interface UpdatedProject extends Project {
@@ -41,6 +42,7 @@ function MainComponent({ project, onDelete, onModal, onUpdate }: MainComponentPr
             onModal={onModal}
             onUpdate={onUpdate}
             deviceSerialNumbers={project.deviceSerialNumbers}
+            userNames={project.userNames}
             updatedProject={function (projectID: number): void {
                 throw new Error('Function not implemented.');
             }} />
