@@ -26,6 +26,7 @@ interface Project {
     userCount: number;
     beginDate?: string;
     expirationDate?: string;
+    deviceSerialNumbers?: string[];
 }
 
 interface Device {
@@ -150,10 +151,12 @@ export default function Dashboard() {
                 const userData = await userResponse.json();
 
                 const processedProjects = projectData.map((project: Project) => {
-                    const deviceCount = deviceData.filter((device: Device) => device.projectId === project.id).length;
+                    const devices = deviceData.filter((device: Device) => device.projectId === project.id);
+                    const deviceCount = devices.length;
                     const userCount = userData.filter((user: User) => user.projectId === project.id).length;
+                    const deviceSerialNumbers = devices.map(device => device.serialNumber);
 
-                    return { ...project, deviceCount, userCount };
+                    return { ...project, deviceCount, userCount, deviceSerialNumbers };
                 });
 
                 setProjects(processedProjects);

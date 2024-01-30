@@ -11,6 +11,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { UpdatedProject, Project } from './DataParsers';
+import Tooltip from '@mui/material/Tooltip';
 
 interface BasicCardProps {
     projectId: number;
@@ -19,6 +20,7 @@ interface BasicCardProps {
     userCount: number;
     startDate: string;
     endDate: string;
+    deviceSerialNumbers?: string[];
     onDelete: (projectId: number) => void;
     onModal: (projectID: number) => void;
     onUpdate: (updatedProject: UpdatedProject) => void;
@@ -49,6 +51,7 @@ export default function BasicCard({
     userCount,
     startDate,
     endDate,
+    deviceSerialNumbers,
     onDelete,
     onUpdate,
 }: BasicCardProps) {
@@ -100,9 +103,18 @@ export default function BasicCard({
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
                     Devices: {deviceCount}
-                    <IconButton aria-label="devices" size="small">
-                        <DevicesIcon fontSize="inherit" />
-                    </IconButton>
+                    <Tooltip
+                        title={
+                            deviceSerialNumbers && deviceSerialNumbers.length > 0
+                                ? <span dangerouslySetInnerHTML={{ __html: deviceSerialNumbers.join('<br />') }} />
+                                : "No devices active"
+                        }
+                        placement='right'
+                    >
+                        <IconButton aria-label="devices" size="small">
+                            <DevicesIcon fontSize="inherit" />
+                        </IconButton>
+                    </Tooltip>
                 </Typography>
                 <Typography sx={{ mb: 1.5 }} color="text.secondary">
                     Users: {userCount}
@@ -126,16 +138,18 @@ export default function BasicCard({
                     </Typography>
                     <TextField
                         id="project-name"
-                        label="Project Name"
+                        label="Project Name (Mx. 20 chars)"
                         variant="standard"
+                        inputProps={{ maxLength: 20 }}
                         fullWidth
                         value={ModalProjectName}
                         onChange={e => setProjectName(e.target.value)}
                     />
                     <TextField
                         id="project-description"
-                        label="Description (Max 20 chars)"
+                        label="Description (Mx. 40 chars)"
                         variant="standard"
+                        inputProps={{ maxLength: 40 }}
                         fullWidth
                         value={ModalprojectDescription}
                         onChange={e => setProjectDescription(e.target.value)}
