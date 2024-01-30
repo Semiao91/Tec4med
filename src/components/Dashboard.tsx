@@ -17,7 +17,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MainComponent from "./DataParsers";
-
+import { mainListItems, secondaryListItems } from './SidebarButtons';
 
 interface Project {
     id: number;
@@ -31,13 +31,21 @@ interface Project {
 interface Device {
     deviceId: number;
     projectId: number;
-    // ... other device properties
+
 }
 
 interface User {
     userId: number;
     projectId: number;
-    // ... other user properties
+
+}
+
+interface UpdatedProject extends Project {
+    ModalProjectName: string;
+    ModalprojectDescription: string;
+    ModalStartDate: string;
+    ModalEndDate: string;
+
 }
 
 
@@ -110,7 +118,6 @@ const Drawer = styled(MuiDrawer, {
     },
 }));
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function Dashboard() {
@@ -118,6 +125,12 @@ export default function Dashboard() {
 
 
     const [projects, setProjects] = useState<Project[]>([]);
+
+    function updateProjectData(updatedProject: UpdatedProject) {
+        setProjects(prevProjects => prevProjects.map(project =>
+            project.id === updatedProject.id ? updatedProject : project
+        ));
+    }
 
     const handleDelete = (projectId: number) => {
         const updatedProjects = projects.filter(project => project.id !== projectId);
@@ -166,7 +179,7 @@ export default function Dashboard() {
                 <AppBar position="absolute" open={open}>
                     <Toolbar
                         sx={{
-                            pr: "24px", // keep right padding when drawer closed
+                            pr: "24px",
                         }}
                     >
                         <IconButton
@@ -188,7 +201,7 @@ export default function Dashboard() {
                             noWrap
                             sx={{ flexGrow: 1 }}
                         >
-                            Dashboard
+                            Tech4Med
                         </Typography>
                         <IconButton color="inherit">
                             <Badge badgeContent={4} color="secondary">
@@ -212,7 +225,9 @@ export default function Dashboard() {
                     </Toolbar>
                     <Divider />
                     <List component="nav">
+                        {mainListItems}
                         <Divider sx={{ my: 1 }} />
+                        {secondaryListItems}
                     </List>
                 </Drawer>
                 <Box
@@ -232,7 +247,10 @@ export default function Dashboard() {
                         <Grid container spacing={4}>
                             {projects.map((project, index) => (
                                 <Grid item xs={12} md={6} lg={4} key={index}>
-                                    <MainComponent project={project} onDelete={handleDelete} />
+                                    <MainComponent
+                                        project={project}
+                                        onDelete={handleDelete}
+                                        onUpdate={updateProjectData} />
                                 </Grid>
                             ))}
                         </Grid>
