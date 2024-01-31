@@ -19,37 +19,9 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MainComponent from "./DataParsers";
 import { mainListItems } from './SidebarButtons';
 import Table from './Table';
+import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from "@mui/material";
+import { User, Device, Project, UpdatedProject } from '../interfaces/interfaces';
 
-interface Project {
-    id: number;
-    title: string;
-    deviceCount: number;
-    userCount: number;
-    beginDate?: string;
-    expirationDate?: string;
-    deviceSerialNumbers?: string[];
-    userNames?: string[];
-}
-
-interface Device {
-    deviceId: number;
-    projectId: number;
-
-}
-
-interface User {
-    userId: number;
-    projectId: number;
-
-}
-
-interface UpdatedProject extends Project {
-    ModalProjectName: string;
-    ModalprojectDescription: string;
-    ModalStartDate: string;
-    ModalEndDate: string;
-
-}
 
 
 function Copyright(props: any) {
@@ -130,6 +102,22 @@ export default function Dashboard() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [tableData, setTableData] = useState([]);
     const [currentView, setCurrentView] = useState('dashboard');
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [selectedProjectId, setSelectedProjectId] = useState(null);
+
+    const handleDialogOpen = (projectId) => {
+        setSelectedProjectId(projectId);
+        setIsDialogOpen(true);
+    };
+
+    const handleDialogClose = () => {
+        setIsDialogOpen(false);
+    };
+
+    const confirmDelete = () => {
+        handleDelete(selectedProjectId);
+        handleDialogClose();
+    };
 
     function updateProjectData(updatedProject: UpdatedProject) {
         setProjects(prevProjects => prevProjects.map(project =>
@@ -278,7 +266,7 @@ export default function Dashboard() {
                                     <Grid item xs={12} md={6} lg={4} key={index}>
                                         <MainComponent
                                             project={project}
-                                            onDelete={handleDelete}
+                                            onDelete={() => handleDialogOpen(project.id)}
                                             onUpdate={updateProjectData}
                                         />
                                     </Grid>
@@ -289,6 +277,27 @@ export default function Dashboard() {
                     </Container>
                 </Box>
             </Box>
+            <Dialog
+                open={isDialogOpen}
+                onClose={handleDialogClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to delete this project?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={confirmDelete} color="primary" autoFocus>
+                        Confirm
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </ThemeProvider>
 
     );

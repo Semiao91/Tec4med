@@ -1,53 +1,23 @@
 import BasicCard from './Card';
+import { MainComponentProps } from '../interfaces/interfaces';
 
-export interface Project {
-    id: number;
-    title: string;
-    deviceCount: number;
-    userCount: number;
-    beginDate: string;
-    expirationDate: string;
-    description: string;
-    deviceSerialNumbers?: string[];
-    userNames?: string[];
-}
+function MainComponent({ project, onDelete, onUpdate }: MainComponentProps) {
+    const { id, title, description, deviceCount, userCount, beginDate, expirationDate, deviceSerialNumbers, userNames } = project;
 
-export interface UpdatedProject extends Project {
-    ModalProjectName: string;
-    ModalprojectDescription: string;
-    ModalStartDate: string;
-    ModalEndDate: string;
-
-}
-type onDeleteType = (projectId: number) => void;
-type onModalType = (projectId: number) => void;
-
-interface MainComponentProps {
-    project: Project;
-    onDelete: onDeleteType;
-    onModal: onModalType;
-    onUpdate: (updatedProject: UpdatedProject) => void;
-}
-
-function MainComponent({ project, onDelete, onModal, onUpdate }: MainComponentProps) {
     return (
         <BasicCard
-            projectId={project.id}
-            projectName={project.title}
-            description={project.description}
-            deviceCount={project.deviceCount || 0}
-            userCount={project.userCount || 0}
-            startDate={project.beginDate || ''}
-            endDate={project.expirationDate || 'N/'}
+            projectId={id}
+            projectName={title}
+            description={description}
+            deviceCount={deviceCount || 0}
+            userCount={userCount || 0}
+            startDate={beginDate || ''}
+            endDate={expirationDate || 'N/A'}
+            deviceSerialNumbers={deviceSerialNumbers}
+            userNames={userNames}
             onDelete={onDelete}
-            onModal={onModal}
             onUpdate={onUpdate}
-            deviceSerialNumbers={project.deviceSerialNumbers}
-            userNames={project.userNames}
-            updatedProject={function (projectID: number): void {
-                throw new Error('Function not implemented.');
-            }} />
-
+        />
     );
 }
 

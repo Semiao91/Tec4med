@@ -10,25 +10,10 @@ import { Box, Modal, Typography, TextField, Stack, Button } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { UpdatedProject, Project } from './DataParsers';
 import Tooltip from '@mui/material/Tooltip';
 import dayjs from 'dayjs';
+import { BasicCardProps, Project } from '../interfaces/interfaces';
 
-interface BasicCardProps {
-    projectId: number;
-    projectName: string;
-    description: string;
-    deviceCount: number;
-    userCount: number;
-    startDate: string;
-    endDate: string;
-    deviceSerialNumbers?: string[];
-    userNames?: string[];
-    onDelete: (projectId: number) => void;
-    onModal: (projectID: number) => void;
-    onUpdate: (updatedProject: UpdatedProject) => void;
-    updatedProject: (projectID: number) => void;
-}
 
 const style = {
     position: 'absolute',
