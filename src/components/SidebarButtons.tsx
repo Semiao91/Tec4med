@@ -8,8 +8,9 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import DevicesIcon from '@mui/icons-material/Devices';
 
+type ViewType = 'dashboard' | 'users';
 
-export const mainListItems = (setCurrentView) => (
+export const mainListItems = (setCurrentView: (view: ViewType) => void) => (
     <React.Fragment>
         <ListSubheader component="div" inset>
             Overview

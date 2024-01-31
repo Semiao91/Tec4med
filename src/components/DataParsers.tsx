@@ -17,7 +17,7 @@ function MainComponent({ project, onDelete, onUpdate }: MainComponentProps) {
             userNames={userNames}
             onDelete={onDelete}
             onUpdate={onUpdate}
-            updatedProject={function (projectID: number): void {
+            updatedProject={function (): void {
             }} />
     );
 }
