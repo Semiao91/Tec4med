@@ -12,10 +12,12 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { UpdatedProject, Project } from './DataParsers';
 import Tooltip from '@mui/material/Tooltip';
+import dayjs from 'dayjs';
 
 interface BasicCardProps {
     projectId: number;
     projectName: string;
+    description: string;
     deviceCount: number;
     userCount: number;
     startDate: string;
@@ -54,13 +56,20 @@ export default function BasicCard({
     endDate,
     deviceSerialNumbers,
     userNames,
+    description,
     onDelete,
     onUpdate,
 }: BasicCardProps) {
 
     const [open, setOpen] = useState(false);
 
-    const handleOpen = () => setOpen(true);
+    const handleOpen = () => {
+        setProjectName(projectName);
+        setProjectDescription(description);
+        setStartDate(dayjs(startDate));
+        setEndDate(dayjs(endDate));
+        setOpen(true);
+    };
     const handleClose = () => setOpen(false);
 
     const [ModalProjectName, setProjectName] = useState('');
@@ -75,8 +84,10 @@ export default function BasicCard({
             description: ModalprojectDescription,
             deviceCount: deviceCount,
             userCount: userCount,
-            beginDate: ModalStartDate,
-            expirationDate: ModalEndDate,
+            userNames: userNames,
+            deviceSerialNumbers: deviceSerialNumbers,
+            beginDate: ModalStartDate.format('YYYY-MM-DD'),
+            expirationDate: ModalEndDate.format('YYYY-MM-DD'),
         };
 
         onUpdate(updatedProject);
@@ -134,7 +145,7 @@ export default function BasicCard({
                     </Tooltip>
                 </Typography>
                 <Typography variant="body2">
-                    Description: {ModalprojectDescription}
+                    Description: {description}
                 </Typography>
             </CardContent>
             <Modal
@@ -145,7 +156,10 @@ export default function BasicCard({
             >
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Edit Project
+                        Edit Project:
+                    </Typography>
+                    <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+                        {projectName}
                     </Typography>
                     <TextField
                         id="project-name"
@@ -167,10 +181,16 @@ export default function BasicCard({
                     />
                     <Typography id="modal-modal-title" variant="h6" component="h2">Set Date</Typography>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker value={ModalStartDate} onChange={(newValue) => setStartDate(newValue?.toString())} />
+                        <DatePicker
+                            value={ModalStartDate}
+                            onChange={(newValue) => setStartDate(newValue)}
+                        />
                     </LocalizationProvider>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker value={ModalEndDate} onChange={(newValue) => setEndDate(newValue?.toString())} />
+                        <DatePicker
+                            value={ModalEndDate}
+                            onChange={(newValue) => setEndDate(newValue)}
+                        />
                     </LocalizationProvider>
                     <Stack spacing={2} direction="row" justifyContent="flex-end">
                         <Button variant="outlined" onClick={handleClose}>Cancel</Button>

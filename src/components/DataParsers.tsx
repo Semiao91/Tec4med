@@ -7,7 +7,7 @@ export interface Project {
     userCount: number;
     beginDate: string;
     expirationDate: string;
-    description?: string;
+    description: string;
     deviceSerialNumbers?: string[];
     userNames?: string[];
 }
@@ -34,6 +34,7 @@ function MainComponent({ project, onDelete, onModal, onUpdate }: MainComponentPr
         <BasicCard
             projectId={project.id}
             projectName={project.title}
+            description={project.description}
             deviceCount={project.deviceCount || 0}
             userCount={project.userCount || 0}
             startDate={project.beginDate || ''}

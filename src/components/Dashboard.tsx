@@ -17,7 +17,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MainComponent from "./DataParsers";
-import { mainListItems, secondaryListItems } from './SidebarButtons';
+import { mainListItems } from './SidebarButtons';
 import Table from './Table';
 
 interface Project {
@@ -71,7 +71,7 @@ function Copyright(props: any) {
 }
 
 
-const drawerWidth: number = 240; //Controls width of side bar
+const drawerWidth: number = 240;
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
