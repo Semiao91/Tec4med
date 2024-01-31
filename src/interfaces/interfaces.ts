@@ -13,11 +13,14 @@ export interface Project {
 export interface Device {
     deviceId: number;
     projectId: number;
+    serialNumber: number;
 }
 
 export interface User {
     userId: number;
     projectId: number;
+    firstName: string;
+    lastName: string;
 }
 
 export interface UpdatedProject extends Project {
@@ -46,6 +49,16 @@ export interface BasicCardProps {
     onDelete: (projectId: number) => void;
     onUpdate: (updatedProject: UpdatedProject) => void;
     updatedProject: (projectID: number) => void;
+}
+
+export interface TableDataItem {
+    userName: string;
+    projectName: string;
+    device: string | number;
+}
+
+export interface CustomizedTablesProps{
+    data: TableDataItem[];
 }
 
 

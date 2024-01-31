@@ -20,7 +20,7 @@ import MainComponent from "./DataParsers";
 import { mainListItems } from './SidebarButtons';
 import Table from './Table';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from "@mui/material";
-import { User, Device, Project, UpdatedProject } from '../interfaces/interfaces';
+import { User, Device, Project, UpdatedProject, TableDataItem } from '../interfaces/interfaces';
 
 
 
@@ -100,12 +100,12 @@ export default function Dashboard() {
 
 
     const [projects, setProjects] = useState<Project[]>([]);
-    const [tableData, setTableData] = useState([]);
-    const [currentView, setCurrentView] = useState('dashboard');
+    const [tableData, setTableData] = useState<TableDataItem[]>([]);
+    const [currentView, setCurrentView] = useState<'dashboard' | 'users'>('dashboard');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [selectedProjectId, setSelectedProjectId] = useState(null);
+    const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
 
-    const handleDialogOpen = (projectId) => {
+    const handleDialogOpen = (projectId: number) => {
         setSelectedProjectId(projectId);
         setIsDialogOpen(true);
     };
@@ -115,8 +115,10 @@ export default function Dashboard() {
     };
 
     const confirmDelete = () => {
-        handleDelete(selectedProjectId);
-        handleDialogClose();
+        if (selectedProjectId !== null) {
+            handleDelete(selectedProjectId);
+            handleDialogClose();
+        }
     };
 
     function updateProjectData(updatedProject: UpdatedProject) {
@@ -134,26 +136,26 @@ export default function Dashboard() {
         const fetchProjects = async () => {
             try {
                 const projectResponse = await fetch('/data/project.json');
-                const projectData = await projectResponse.json();
+                const projectData: Project[] = await projectResponse.json();
 
                 const deviceResponse = await fetch('/data/device.json');
-                const deviceData = await deviceResponse.json();
+                const deviceData: Device[] = await deviceResponse.json();
 
                 const userResponse = await fetch('/data/user.json');
-                const userData = await userResponse.json();
+                const userData: User[] = await userResponse.json();
 
                 const processedProjects = projectData.map((project: Project) => {
                     const devices = deviceData.filter((device: Device) => device.projectId === project.id);
                     const deviceCount = devices.length;
                     const users = userData.filter((user: User) => user.projectId === project.id);
                     const userCount = users.length;
-                    const deviceSerialNumbers = devices.map(device => device.serialNumber);
+                    const deviceSerialNumbers = devices.map(device => device.serialNumber.toString());
                     const userNames = users.map(user => user.firstName + " " + user.lastName);
 
                     return { ...project, deviceCount, userCount, deviceSerialNumbers, userNames };
                 });
 
-                const tableData = [];
+                const tableData: TableDataItem[] = [];
 
                 processedProjects.forEach(project => {
                     project.userNames.forEach((userName, index) => {

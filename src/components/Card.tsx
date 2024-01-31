@@ -11,8 +11,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import Tooltip from '@mui/material/Tooltip';
-import dayjs from 'dayjs';
-import { BasicCardProps, Project } from '../interfaces/interfaces';
+import dayjs, { Dayjs } from 'dayjs';
+import { BasicCardProps, UpdatedProject } from '../interfaces/interfaces';
 
 
 const style = {
@@ -59,21 +59,26 @@ export default function BasicCard({
 
     const [ModalProjectName, setProjectName] = useState('');
     const [ModalprojectDescription, setProjectDescription] = useState('');
-    const [ModalStartDate, setStartDate] = useState("");
-    const [ModalEndDate, setEndDate] = useState("");
+    const [ModalStartDate, setStartDate] = useState<Dayjs | null>(null);
+    const [ModalEndDate, setEndDate] = useState<Dayjs | null>(null);
 
     const handleSave = () => {
-        const updatedProject: Project = {
+        const updatedProject: UpdatedProject = {
             id: projectId,
             title: ModalProjectName,
             description: ModalprojectDescription,
             deviceCount: deviceCount,
             userCount: userCount,
-            userNames: userNames,
+            beginDate: ModalStartDate ? ModalStartDate.format('YYYY-MM-DD') : '',
+            expirationDate: ModalEndDate ? ModalEndDate.format('YYYY-MM-DD') : '',
             deviceSerialNumbers: deviceSerialNumbers,
-            beginDate: ModalStartDate.format('YYYY-MM-DD'),
-            expirationDate: ModalEndDate.format('YYYY-MM-DD'),
+            userNames: userNames,
+            ModalProjectName: ModalProjectName,
+            ModalprojectDescription: ModalprojectDescription,
+            ModalStartDate: ModalStartDate ? ModalStartDate.format('YYYY-MM-DD') : '',
+            ModalEndDate: ModalEndDate ? ModalEndDate.format('YYYY-MM-DD') : '',
         };
+
 
         onUpdate(updatedProject);
         handleClose();
