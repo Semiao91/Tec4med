@@ -17,6 +17,8 @@ The Tec4med Dashboard is a sleek and user-friendly web application designed to m
 
 . Responsive Design: Crafted to provide a seamless experience across various devices and screen sizes.
 
+. On hover display for both devices and users of each project.
+
 ![Feature](https://i.imgur.com/IjBevZs.png)
 
 ## Technologies Used
